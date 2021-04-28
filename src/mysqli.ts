@@ -1,0 +1,134 @@
+import mysql from "mysql"
+
+interface connectionInfo {
+    host: string,
+    user: string,
+    password: string
+}
+interface getInfo {
+    database: string,
+    table: string,
+    id?: any,
+    where?: any,
+    properties?: string | string[],
+    limit?: string
+}
+interface postInfo {
+    database: string,
+    table: string,
+    properties: { key: string, value: any }[]
+}
+interface putInfo {
+    database: string,
+    table: string,
+    id: any,
+    properties: any
+}
+interface deleteInfo {
+    database: string,
+    table: string,
+    id: any
+}
+
+export default class MysqlInterface {
+    private server: any = undefined;
+
+    constructor( private config: any ) {
+        console.log("Mysql Interface initialized successfully!");
+    }
+
+    public async connect(): Promise<void> {
+        let self = this;
+        return new Promise(function( resolve, reject ) {
+            self.server = mysql.createConnection( self.config );
+            self.server.connect(function( error: any ) {
+                if ( error ) {
+                    reject( error );
+                } else {
+                    resolve();
+                }
+            });
+        });
+    }
+    public async disconnect(): Promise<void> {
+        let self = this;
+        return new Promise(function( resolve, reject ) {
+            self.server.end(function( error: any ) {
+                if ( error ) {
+                    reject( error );
+                } else {
+                    resolve();
+                }
+            });
+        });
+    }
+    private async query( query: string ) {
+        let self = this;
+        return new Promise(function( resolve, reject ) {
+            self.server.query(query, function( error: any, result: any, fields: any ) {
+                if ( error ) {
+                    reject( error );
+                } else {
+                    resolve( result );
+                }
+            });
+        });
+    }
+
+    public async delete({ database, table, id }: deleteInfo ) {
+        let self = this;
+        id = "where " + Object.keys( id ).map(key => { 
+            return key + " = " + JSON.stringify( id[key] );
+        }).join(" and ");
+        let query = "delete from " + database + "." + table + " " + id + ";";
+        await self.query( query );
+    }
+    public async put({ database, table, id, properties }: putInfo): Promise<void> {
+        let self = this;
+        properties = Object.keys( properties ).map(key => {
+            return key + " = " + JSON.stringify( properties[key] );
+        }).join(", ");
+        id = Object.keys( id ).map(key => { 
+            return key + " = " + JSON.stringify( id[key] );
+        }).join(" and ");
+        let query = "update " + database + "." + table + " set " + properties + " where " + id + ";";
+        await self.query( query );
+    }
+    public async post({ database, table, properties }: postInfo) {
+        let self = this;
+        let keys = Object.keys( properties ).join(", ");
+        let values = Object.values( properties ).map(property => { return JSON.stringify( property ); }).join(", ");
+        let query = "insert into " + database + "." + table + " ( " + keys + " ) values( " + values + " );";
+        let result: any = await self.query( query );
+        let id = result.insertId;
+        return id;
+    }
+    public async get({
+        database,
+        table,
+        id,
+        limit = "",
+        where = "",
+        properties = "*"
+    }: getInfo) {
+        let self = this;
+        if ( id && where != "" ) {
+            throw new Error("The id and where clause were both set.");
+        } else {
+            properties = Array.isArray( properties )? properties.join(", "): properties;
+            if ( id ) {
+                where = "where " + Object.keys( id ).map(key => { 
+                    return key + " = " + JSON.stringify( id[key] );
+                }).join(" and ");
+            } else if ( where ) {
+                where = "where " + Object.keys( where ).map(key => {
+                    return key + " = " + JSON.stringify( where[key] );
+                }).join(" and ");
+            } 
+            let query = "select " + properties + " from " + database + "." + table + " " + where + " " + limit;
+            query = query.trim() + ";";
+            let result = await self.query( query );
+            return result;
+        }
+    }
+}
