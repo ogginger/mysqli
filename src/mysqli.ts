@@ -11,12 +11,12 @@ interface getInfo {
     id?: any,
     where?: any,
     properties?: string | string[],
-    limit?: string
+    limit?: string | number
 }
 interface postInfo {
     database: string,
     table: string,
-    properties: { key: string, value: any }[]
+    properties: { [key: string]: any }
 }
 interface putInfo {
     database: string,
@@ -125,7 +125,7 @@ export default class MysqlInterface {
                     return key + " = " + JSON.stringify( where[key] );
                 }).join(" and ");
             } 
-            let query = "select " + properties + " from " + database + "." + table + " " + where + " " + limit;
+            let query = "select " + properties + " from " + database + "." + table + " " + where + " " + limit.toString();
             query = query.trim() + ";";
             let result = await self.query( query );
             return result;
