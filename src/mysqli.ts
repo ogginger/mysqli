@@ -16,7 +16,7 @@ interface getInfo {
 interface postInfo {
     database: string,
     table: string,
-    properties: { [key: string]: any }
+    properties: any
 }
 interface putInfo {
     database: string,
