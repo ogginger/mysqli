@@ -37,6 +37,19 @@ export default class MysqlInterface {
         console.log("Mysql Interface initialized successfully!");
     }
 
+    private async query( query: string ) {
+        let self = this;
+        return new Promise(function( resolve, reject ) {
+            self.server.query(query, function( error: any, result: any, fields: any ) {
+                if ( error ) {
+                    reject( error );
+                } else {
+                    resolve( result );
+                }
+            });
+        });
+    }
+
     public async connect(): Promise<void> {
         let self = this;
         return new Promise(function( resolve, reject ) {
@@ -62,19 +75,6 @@ export default class MysqlInterface {
             });
         });
     }
-    private async query( query: string ) {
-        let self = this;
-        return new Promise(function( resolve, reject ) {
-            self.server.query(query, function( error: any, result: any, fields: any ) {
-                if ( error ) {
-                    reject( error );
-                } else {
-                    resolve( result );
-                }
-            });
-        });
-    }
-
     public async delete({ database, table, id }: deleteInfo ) {
         let self = this;
         id = "where " + Object.keys( id ).map(key => { 
