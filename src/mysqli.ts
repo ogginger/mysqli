@@ -1,6 +1,6 @@
 import mysql from "mysql"
 
-interface connectionInfo {
+interface config {
     host: string,
     user: string,
     password: string
@@ -33,7 +33,7 @@ interface deleteInfo {
 export default class MysqlInterface {
     private server: any = undefined;
 
-    constructor( private config: any ) {
+    constructor( private config: config ) {
         console.log("Mysql Interface initialized successfully!");
     }
 
@@ -75,7 +75,7 @@ export default class MysqlInterface {
             });
         });
     }
-    public async delete({ database, table, id }: deleteInfo ) {
+    public async delete({ database, table, id }: deleteInfo ): Promise<void> {
         let self = this;
         id = "where " + Object.keys( id ).map(key => { 
             return key + " = " + JSON.stringify( id[key] );
@@ -94,7 +94,7 @@ export default class MysqlInterface {
         let query = "update " + database + "." + table + " set " + properties + " where " + id + ";";
         await self.query( query );
     }
-    public async post({ database, table, properties }: postInfo) {
+    public async post({ database, table, properties }: postInfo): Promise<number> {
         let self = this;
         let keys = Object.keys( properties ).join(", ");
         let values = Object.values( properties ).map(property => { return JSON.stringify( property ); }).join(", ");
@@ -110,7 +110,7 @@ export default class MysqlInterface {
         limit = "",
         where = "",
         properties = "*"
-    }: getInfo) {
+    }: getInfo): Promise<any> {
         let self = this;
         if ( id && where != "" ) {
             throw new Error("The id and where clause were both set.");
