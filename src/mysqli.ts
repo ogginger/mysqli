@@ -63,7 +63,7 @@ export default class MysqlInterface {
             });
         });
     }
-    public async disconnect(): Promise<void> {
+    public async close(): Promise<void> {
         let self = this;
         return new Promise(function( resolve, reject ) {
             self.server.end(function( error: any ) {
