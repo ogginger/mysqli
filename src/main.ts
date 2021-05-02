@@ -2,13 +2,7 @@ import test from "./dev/test"
 import MysqlInterface from "./mysqli"
 
 
-function tests() {
-    let context = new MysqlInterface({
-        host: "localhost",
-        user: "user",
-        password: "password"
-    });
-
+function tests( context: any ) {
     function test( input: any ) {
         let object: any = {
             name: "",
@@ -170,12 +164,41 @@ function tests() {
             },
             output: true,
             debug: false
+        }), test({
+            name: "get_{db,fruits,emptyWhereObject}_returnsAll",
+            input: [{
+                database: "db",
+                table: "fruits"
+            }],
+            function: async function( input: any ) {
+                let self = this;
+                await self.connect();
+                let all = await self.get({
+                    database: input.database,
+                    table: input.table
+                });
+                let result = await MysqlInterface.prototype.get.call( self, input );
+                result = JSON.stringify(result);
+                let expected = JSON.stringify(all);
+                let passes = result == expected;
+                await self.close();
+                return passes;
+            },
+            output: true,
+            debug: false
         })
     ];
 }
 
 async function main() {
-    await test(tests());
+    let context = new MysqlInterface({
+        host: "localhost",
+        user: "user",
+        password: "password"
+    });
+    
+    await test(tests( context ));
+    await context.close()
 }
 
 main();
