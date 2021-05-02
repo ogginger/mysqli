@@ -1,4 +1,5 @@
 import mysql from "mysql"
+import _ from "lodash"
 
 interface config {
     host: string,
@@ -66,13 +67,16 @@ export default class MysqlInterface {
     public async close(): Promise<void> {
         let self = this;
         return new Promise(function( resolve, reject ) {
-            self.server.end(function( error: any ) {
-                if ( error ) {
-                    reject( error );
-                } else {
-                    resolve();
-                }
-            });
+            if ( self.server && self.server.state != "disconnected" ) {
+                self.server.end(function( error: any ) {
+                    if ( error ) {
+                        reject( error );
+                    } else {
+                        resolve();
+                    }
+                });
+            }
+            
         });
     }
     public async delete({ database, table, id }: deleteInfo ): Promise<void> {
@@ -116,16 +120,28 @@ export default class MysqlInterface {
             throw new Error("The id and where clause were both set.");
         } else {
             properties = Array.isArray( properties )? properties.join(", "): properties;
-            if ( id ) {
+            if ( 
+                id &&
+                _.isEmpty( id ) == false
+            ) {
                 where = "where " + Object.keys( id ).map(key => { 
                     return key + " = " + JSON.stringify( id[key] );
                 }).join(" and ");
-            } else if ( where ) {
-                where = "where " + Object.keys( where ).map(key => {
+            } else if ( 
+                where && 
+                _.isEmpty( where ) == false
+            ) {
+                where = (typeof where == "string")? where: Object.keys( where ).map(key => {
                     return key + " = " + JSON.stringify( where[key] );
                 }).join(" and ");
-            } 
-            let query = "select " + properties + " from " + database + "." + table + " " + where + " " + limit.toString();
+                where = where.match(/^where /i)? where: "where " + where;
+            }
+            if ( limit ) {
+                limit = (typeof limit == "string")? limit: "limit " + limit.toString();
+                limit = limit.match(/^limit /i)? limit: "limit " + limit;
+            }
+            
+            let query = "select " + properties + " from " + database + "." + table + " " + where + " " + limit;
             query = query.trim() + ";";
             let result = await self.query( query );
             return result;
