@@ -116,7 +116,10 @@ export default class MysqlInterface {
         properties = "*"
     }: getInfo): Promise<any> {
         let self = this;
-        if ( id && where != "" ) {
+        if (
+            _.isEmpty( id ) == false && 
+            _.isEmpty( where ) == false
+        ) {
             throw new Error("The id and where clause were both set.");
         } else {
             properties = Array.isArray( properties )? properties.join(", "): properties;
