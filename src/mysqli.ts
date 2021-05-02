@@ -135,6 +135,8 @@ export default class MysqlInterface {
                     return key + " = " + JSON.stringify( where[key] );
                 }).join(" and ");
                 where = where.match(/^where /i)? where: "where " + where;
+            } else {
+                where = "";
             }
             if ( limit ) {
                 limit = (typeof limit == "string")? limit: "limit " + limit.toString();
