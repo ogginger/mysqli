@@ -10,8 +10,10 @@
   "license": "ISC",
   "devDependencies": {
     "@types/lodash": "^4.14.168",
-    "@types/mysql": "^2.15.18",
-    "lodash": "^4.17.21",
-    "mysql": "^2.18.1"
+    "@types/node": "^16.4.10",
+    "lodash": "^4.17.21"
+  },
+  "dependencies": {
+    "mysql2": "^2.2.5"
   }
 }
