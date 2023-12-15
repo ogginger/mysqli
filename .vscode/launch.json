@@ -5,7 +5,8 @@
         "program": "${workspaceFolder}/src/main.ts",
         "request": "launch",
         "outFiles": [
-            "${workspaceFolder}/builds/**/*"
+            "${workspaceFolder}/builds/**/*",
+            "${workspaceFolder}/node_modules/@ogginger/testsuite/**/*"
         ],
         "skipFiles": [
             "<node_internals>/**"

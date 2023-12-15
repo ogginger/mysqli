@@ -1,5 +1,5 @@
 {
-  "name": "mysqli",
+  "name": "@ogginger/mysqli",
   "version": "1.0.0",
   "description": "Empty typescript project for quick-starting development.",
   "main": "index.js",
@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@ogginger/testsuite": "^1.0.11",
     "@types/lodash": "^4.14.168",
     "@types/node": "^16.4.10",
     "lodash": "^4.17.21"
