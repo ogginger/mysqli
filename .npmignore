@@ -1,4 +1,6 @@
 .gitignore
 node_modules/
+src/main.ts
 .vscode/
 tsconfig.json
+builds/main.*

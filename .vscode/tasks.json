@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "Build - My Task",
+            "label": "Build - Mysqli (tsc)",
             "command": "tsc",
             "type": "shell",
             "args": [
@@ -18,7 +18,7 @@
             "group": "build"
         },
         {
-            "label": "Watch - My Task",
+            "label": "Watch - Mysqli (tsc)",
             "command": "tsc",
             "type": "shell",
             "args": [

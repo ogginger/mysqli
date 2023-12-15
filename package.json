@@ -2,9 +2,13 @@
   "name": "@ogginger/mysqli",
   "version": "1.0.0",
   "description": "Empty typescript project for quick-starting development.",
-  "main": "index.js",
+  "main": "builds/mysqli.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/ogginger/mysqli"
   },
   "author": "",
   "license": "ISC",
