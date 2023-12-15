@@ -13,7 +13,8 @@
         "noImplicitAny": true,        
         "esModuleInterop": true,
         "resolveJsonModule": true,
-        "outDir": "builds"
+        "outDir": "builds",
+        "declaration": true,
     },
     "exclude": [
         "node_modules"

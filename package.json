@@ -1,6 +1,6 @@
 {
   "name": "@ogginger/mysqli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Empty typescript project for quick-starting development.",
   "main": "builds/mysqli.js",
   "scripts": {
